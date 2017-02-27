@@ -1,5 +1,5 @@
 import pandas as pd
-import matplotlib.pyplot as plt
+import random as rand
 
 def open_file(fileName):
     data = pd.read_csv(fileName)
@@ -118,15 +118,38 @@ def fill_offense_values_with_max(data):
 
     return data
 
+def fill_hour_with_mean(data):
+    shift_hours = {
+        'day': list(range(7, 15)),
+        'evening': list(range(15, 23)),
+        'midnight': [0, 1, 2, 3, 4, 5, 6, 23]
+    }
+    shifts = data['shift']
+
+    for i, s in enumerate(shifts):
+        hour = data.loc[i, 'hour'] == '?'
+        if s == 'DAY' and hour:
+            data.loc[i, 'hour'] = rand.choice(shift_hours['day'])
+        elif s == 'EVENING' and hour:
+            data.loc[i, 'hour'] = rand.choice(shift_hours['evening'])
+        elif s == 'MIDNIGHT' and hour:
+            data.loc[i, 'hour'] = rand.choice(shift_hours['midnight'])
+        else:
+            data.loc[i, 'hour'] = rand.choice(range(0, 24))
+
+    return data
+
+
 if __name__ == '__main__':
     data = open_file("../resources/crime_with_errors.csv")
     data = rename_columns(data)
-    data = replace_year_values(data)
-    data = replace_month_values(data)
-    data = lower_to_uppercase(data, 'shift')
-    data = lower_to_uppercase(data, 'offense')
-    data = letter_to_word(data, 'shift')
-    data = letter_to_word(data, 'offense')
-    data = letter_to_word(data, 'method')
+    replace_year_values(data)
+    replace_month_values(data)
+    lower_to_uppercase(data, 'shift')
+    lower_to_uppercase(data, 'offense')
+    letter_to_word(data, 'shift')
+    letter_to_word(data, 'offense')
+    letter_to_word(data, 'method')
     fill_offense_values_with_max(data)
+    fill_hour_with_mean(data)
     print(data)
