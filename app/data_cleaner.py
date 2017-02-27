@@ -28,7 +28,13 @@ def replace_year_values(data):
     return data
 
 def replace_month_values(data):
+    report_date = data['report_date']
     month = data['month']
+    report_date_months = []
+
+    for rd in report_date:
+        report_date_month = int(rd.split('/')[0])
+        report_date_months.append(report_date_month)
 
     for i, m in enumerate(month):
         if m == 'ENE':
@@ -55,6 +61,8 @@ def replace_month_values(data):
             data.loc[i, 'month'] = 11
         elif m == 'DIC':
             data.loc[i, 'month'] = 12
+        elif int(m) > 12 or int(m) > report_date_months[i]:
+            data.loc[i, 'month'] = report_date_months[i] - 1
 
     return data
 
@@ -118,7 +126,7 @@ def fill_offense_values_with_max(data):
 
     return data
 
-def fill_hour_with_mean(data):
+def fill_hour_with_shift_hour(data):
     shift_hours = {
         'day': list(range(7, 15)),
         'evening': list(range(15, 23)),
@@ -134,11 +142,35 @@ def fill_hour_with_mean(data):
             data.loc[i, 'hour'] = rand.choice(shift_hours['evening'])
         elif s == 'MIDNIGHT' and hour:
             data.loc[i, 'hour'] = rand.choice(shift_hours['midnight'])
-        else:
+        elif s == '?' and hour:
             data.loc[i, 'hour'] = rand.choice(range(0, 24))
 
     return data
 
+def fill_shift_with_shift_hour(data):
+    shift_hours = {
+        'day': list(range(7, 15)),
+        'evening': list(range(15, 23)),
+        'midnight': [0, 1, 2, 3, 4, 5, 6, 23]
+    }
+    shifts = {
+        'day': 'DAY',
+        'evening': 'EVENING',
+        'midnight': 'MIDNIGHT'
+    }
+    hours = data['hour']
+
+    for i, h in enumerate(hours):
+        h = int(h)
+        shift = data.loc[i, 'shift'] == '?'
+        if (h in shift_hours['day']) and shift:
+            data.loc[i, 'shift'] = shifts['day']
+        elif (h in shift_hours['evening']) and shift:
+            data.loc[i, 'shift'] = shifts['evening']
+        elif (h in shift_hours['midnight']) and shift:
+            data.loc[i, 'shift'] = shifts['midnight']
+
+    return data
 
 if __name__ == '__main__':
     data = open_file("../resources/crime_with_errors.csv")
@@ -151,5 +183,6 @@ if __name__ == '__main__':
     letter_to_word(data, 'offense')
     letter_to_word(data, 'method')
     fill_offense_values_with_max(data)
-    fill_hour_with_mean(data)
+    fill_hour_with_shift_hour(data)
+    fill_shift_with_shift_hour(data)
     print(data)
