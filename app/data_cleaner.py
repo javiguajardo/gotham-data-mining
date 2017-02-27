@@ -58,9 +58,22 @@ def replace_month_values(data):
 
     return data
 
+def lower_to_uppercase(data, attribute):
+    records = data[attribute]
+    print(f"{attribute}")
+
+    for i, r in enumerate(records):
+        if r.islower():
+            r = r.upper()
+            data.loc[i, attribute] = r
+
+    return data
+
 if __name__ == '__main__':
     data = open_file("../resources/crime_with_errors.csv")
     data = rename_columns(data)
     data = replace_year_values(data)
     data = replace_month_values(data)
+    data = lower_to_uppercase(data, 'shift')
+    data = lower_to_uppercase(data, 'offense')
     print(data)
