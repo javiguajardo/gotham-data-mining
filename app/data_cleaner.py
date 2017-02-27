@@ -107,6 +107,17 @@ def letter_to_word(data, attribute):
 
     return data
 
+def fill_offense_values_with_max(data):
+    offenses = data['offense']
+    offense_values = offenses.values
+    max_offense = offense_values.max()
+
+    for i, o in enumerate(offenses):
+        if o == '?':
+            data.loc[i, 'offense'] = max_offense
+
+    return data
+
 if __name__ == '__main__':
     data = open_file("../resources/crime_with_errors.csv")
     data = rename_columns(data)
@@ -117,4 +128,5 @@ if __name__ == '__main__':
     data = letter_to_word(data, 'shift')
     data = letter_to_word(data, 'offense')
     data = letter_to_word(data, 'method')
+    fill_offense_values_with_max(data)
     print(data)
