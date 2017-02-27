@@ -27,8 +27,40 @@ def replace_year_values(data):
 
     return data
 
+def replace_month_values(data):
+    month = data['month']
+
+    for i, m in enumerate(month):
+        if m == 'ENE':
+            data.loc[i, 'month'] = 1
+        elif m == 'FEB':
+            data.loc[i, 'month'] = 2
+        elif m == 'MAR':
+            data.loc[i, 'month'] = 3
+        elif m == 'ABR':
+            data.loc[i, 'month'] = 4
+        elif m == 'MAY':
+            data.loc[i, 'month'] = 5
+        elif m == 'JUN':
+             data.loc[i, 'month'] = 6
+        elif m == 'JUL':
+            data.loc[i, 'month'] = 7
+        elif m == 'AGO':
+            data.loc[i, 'month'] = 8
+        elif m == 'SEP':
+            data.loc[i, 'month'] = 9
+        elif m == 'OCT':
+            data.loc[i, 'month'] = 10
+        elif m == 'NOV':
+            data.loc[i, 'month'] = 11
+        elif m == 'DIC':
+            data.loc[i, 'month'] = 12
+
+    return data
+
 if __name__ == '__main__':
     data = open_file("../resources/crime_with_errors.csv")
     data = rename_columns(data)
     data = replace_year_values(data)
+    data = replace_month_values(data)
     print(data)
