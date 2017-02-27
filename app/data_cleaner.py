@@ -60,12 +60,50 @@ def replace_month_values(data):
 
 def lower_to_uppercase(data, attribute):
     records = data[attribute]
-    print(f"{attribute}")
 
     for i, r in enumerate(records):
         if r.islower():
-            r = r.upper()
-            data.loc[i, attribute] = r
+            data.loc[i, attribute] = r.upper()
+
+    return data
+
+def letter_to_word(data, attribute):
+    records = data[attribute]
+    shift_values = {
+        'day': 'DAY',
+        'evening': 'EVENING',
+        'midnight': 'MIDNIGHT'
+    }
+    offense_values = {
+        'homicide': 'HOMICIDE',
+        'sex_abuse': 'SEX ABUSE'
+    }
+    method_values = {
+        'knife': 'KNIFE',
+        'gun': 'GUN',
+        'other': 'OTHERS'
+    }
+
+    for i, r in enumerate(records):
+        if attribute == 'shift':
+            if r == 'D':
+                data.loc[i, attribute] = shift_values['day']
+            elif r == 'E':
+                data.loc[i, attribute] = shift_values['evening']
+            elif r == 'M':
+                data.loc[i, attribute] = shift_values['midnight']
+        elif attribute == 'offense':
+            if r == 'H':
+                data.loc[i, attribute] = offense_values['homicide']
+            elif r == 'S':
+                data.loc[i, attribute] = offense_values['sex_abuse']
+        elif attribute == 'method':
+            if r == 'K':
+                data.loc[i, attribute] = method_values['knife']
+            elif r == 'G':
+                data.loc[i, attribute] = method_values['gun']
+            elif r == 'O':
+                data.loc[i, attribute] = method_values['other']
 
     return data
 
@@ -76,4 +114,7 @@ if __name__ == '__main__':
     data = replace_month_values(data)
     data = lower_to_uppercase(data, 'shift')
     data = lower_to_uppercase(data, 'offense')
+    data = letter_to_word(data, 'shift')
+    data = letter_to_word(data, 'offense')
+    data = letter_to_word(data, 'method')
     print(data)
