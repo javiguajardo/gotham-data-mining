@@ -28,8 +28,31 @@ def method_equals_offense(data, method_index, weapon, crime_type):
     ax = sns.barplot(x=offense_keys, y=method_count)
     plt.show()
 
+def day_equals_sex_abuse(data):
+    shift = data['shift'].value_counts()
+    offense = data['offense'].value_counts()
+    shift_keys = shift.keys()
+    offense_keys = offense.keys()
+    shift_count = []
+
+    for k in offense_keys:
+        subset = data.loc[data['offense'] == k]
+        count = subset.loc[subset['shift'] == shift_keys[2]]['shift'].value_counts()
+        shift_count.append(count)
+
+    print(shift_keys)
+    print(shift_count)
+
+    sns.set_style("whitegrid")
+    plt.ylabel("OFFENSES DURING THE DAY")
+    plt.xlabel('OFFENSES')
+    plt.title("DAY EQUALS SEX ABUSE")
+    ax = sns.barplot(x=offense_keys, y=shift_count)
+    plt.show()
+
 if __name__ == '__main__':
     data = open_file("../resources/crime_with_cleaning.csv")
     #method_equals_offense(data, 1, 'GUNS', 'HOMICIDE')
     #method_equals_offense(data, 2, 'KNIFES', 'HOMICIDE')
-    method_equals_offense(data, 0, 'OTHERS', 'SEX ABUSE')
+    #method_equals_offense(data, 0, 'OTHERS', 'SEX ABUSE')
+    day_equals_sex_abuse(data)
