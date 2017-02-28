@@ -18,9 +18,6 @@ def method_equals_offense(data, method_index, weapon, crime_type):
         count = subset.loc[subset['method'] == method_keys[method_index]]['method'].value_counts()
         method_count.append(count)
 
-    print(method_keys)
-    print(method_count)
-
     sns.set_style("whitegrid")
     plt.ylabel("OFFENSES USING %s" % (weapon))
     plt.xlabel('OFFENSES')
@@ -40,9 +37,6 @@ def day_equals_sex_abuse(data):
         count = subset.loc[subset['shift'] == shift_keys[2]]['shift'].value_counts()
         shift_count.append(count)
 
-    print(shift_keys)
-    print(shift_count)
-
     sns.set_style("whitegrid")
     plt.ylabel("OFFENSES DURING THE DAY")
     plt.xlabel('OFFENSES')
@@ -50,9 +44,27 @@ def day_equals_sex_abuse(data):
     ax = sns.barplot(x=offense_keys, y=shift_count)
     plt.show()
 
+def more_crimes_at_midnight(data):
+    shift = data['shift'].value_counts()
+    shift_keys = shift.keys()
+    midnight_count = []
+
+    for k in shift_keys:
+        subset = data.loc[data['shift'] == k]
+        count = subset['shift'].value_counts()
+        midnight_count.append(count)
+
+    sns.set_style("whitegrid")
+    plt.ylabel("CRIMES PER SHIFT")
+    plt.xlabel('SHIFT')
+    plt.title("MORE CRIMES AT MIDNIGHT")
+    ax = sns.barplot(x=shift_keys, y=midnight_count)
+    plt.show()
+
 if __name__ == '__main__':
     data = open_file("../resources/crime_with_cleaning.csv")
     #method_equals_offense(data, 1, 'GUNS', 'HOMICIDE')
     #method_equals_offense(data, 2, 'KNIFES', 'HOMICIDE')
     #method_equals_offense(data, 0, 'OTHERS', 'SEX ABUSE')
-    day_equals_sex_abuse(data)
+    #day_equals_sex_abuse(data)
+    #more_crimes_at_midnight(data)
