@@ -5,6 +5,9 @@ def open_file(fileName):
     data = pd.read_csv(fileName)
     return data
 
+def write_file(data, fileName):
+    data.to_csv(fileName)
+
 def rename_columns(data):
     data = data.rename(columns={'mont': 'month', 'REPORT_DAT': 'report_date',
     'SHIFT': 'shift', 'OFFENSE': 'offense', 'METHOD': 'method',
@@ -185,4 +188,5 @@ if __name__ == '__main__':
     fill_offense_values_with_max(data)
     fill_hour_with_shift_hour(data)
     fill_shift_with_shift_hour(data)
+    write_file(data, "../resources/crime_with_cleaning.csv")
     print(data)
